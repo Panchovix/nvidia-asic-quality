@@ -1,8 +1,6 @@
 # NVIDIA ASIC quality
 
-[English](#english) · [Español](#español)
-
-## English
+English | [Español](README_es.md)
 
 Read-only script that shows each NVIDIA GPU's Speedo, ASIC quality and IDDQ (leakage).
 
@@ -36,45 +34,9 @@ Other options: `--bus 07` (select by PCI bus), `--ecid` (chip ID: foundry, lot, 
 
 More detail (how much it matters, methodology, datacenter GPUs, read-only calls): [DETAILS.md](DETAILS.md).
 
-## Español
-
-Script de solo lectura que muestra el Speedo, la calidad ASIC y la IDDQ (fuga) de cada GPU NVIDIA.
-
-```
-$ sudo python3 nvidia_asic_quality.py --lang es
-#  Bus  GPU                                               Speedo  Límites driver    Calidad ASIC  IDDQ NVVDD  IDDQ MSVDD
--  ---  ------------------------------------------------  ------  ----------------  ------------  ----------  ----------
-0  03   RTX PRO 6000 Blackwell Max-Q Workstation Edition    2169  2056.9-2284.9           49.2 %       61800       20400
-3  06   GeForce RTX 5090                                    2113  2018.9-2284.9           35.4 %       43750       14450
-4  07   GeForce RTX 5080                                    2247  2054.8-2287.0           82.8 %       35250       13650
-7  13   RTX 2000 Ada Generation                             2008  1901.6-2122.9           48.1 %        9200         n/d
-```
-
-### Cómo usarlo
-
-Necesita Python 3.9+ y el driver de NVIDIA; ningún paquete extra. Según los permisos de `/dev/nvidia*` puede
-requerir `sudo`.
-
-```
-python3 nvidia_asic_quality.py              # todas las GPUs
-python3 nvidia_asic_quality.py --device 0   # una GPU, según la columna #
-python3 nvidia_asic_quality.py --json       # salida JSON
-```
-
-Otras opciones: `--bus 07` (elegir por bus PCI), `--ecid` (ID del chip: fundición, lote, oblea, x/y),
-`--diagnostics` (informe para compartir cuando una GPU muestra `n/d`), `--lang en|es`.
-
-- **Speedo**: valor de velocidad grabado en fábrica en los fusibles del chip. Más alto significa silicio más rápido.
-- **Calidad ASIC**: dónde cae el Speedo dentro del rango de su modelo, `100 × (Speedo − mín) / (máx − mín)`. Es el
-  mismo valor que muestran HWiNFO y mVolt+. Compara solo tarjetas del mismo modelo.
-- **IDDQ**: fuga de fábrica por riel (NVVDD núcleo, MSVDD), también de los fusibles.
-
-Más detalle (cuánto importa, metodología, GPUs de datacenter, llamadas de solo lectura): [DETAILS.md](DETAILS.md).
-
-## Community results / Resultados de la comunidad
+## Community results
 
 Shared by users; ECIDs are left out. ASIC quality only compares cards of the same model.
-Compartidos por usuarios; sin ECID. La calidad ASIC solo compara tarjetas del mismo modelo.
 
 ### RTX PRO 6000 Blackwell (Workstation and Max-Q, range 2056.9–2284.9)
 
@@ -133,7 +95,7 @@ workstation-1 41.3 %, 27.7 %, 47.4 %, 43.5 %; workstation-2 53.6 %, 46.1 %, 31.6
 | el8 | GB300, die 0 | 2170 | 49.5 % | 30400 | 12100 |
 | el8 | GB300, die 1 | 2182 | 55.6 % | 32900 | 13200 |
 
-### Other models / Otros modelos (Panchovix)
+### Other models (Panchovix)
 
 | GPU | Speedo | Model range | ASIC quality | IDDQ NVVDD | IDDQ MSVDD |
 |---|---:|---|---:|---:|---:|
@@ -143,7 +105,6 @@ workstation-1 41.3 %, 27.7 %, 47.4 %, 43.5 %; workstation-2 53.6 %, 46.1 %, 31.6
 | RTX PRO 4000 Blackwell SFF Edition | 2161 | 2054.8–2287.0 | 45.7 % | 21100 | 8450 |
 | RTX 2000 Ada Generation | 2008 | 1901.6–2122.9 | 48.1 % | 9200 | n/a |
 
+## License
 
-## License / Licencia
-
-MIT. See [LICENSE](LICENSE). / Ver [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
