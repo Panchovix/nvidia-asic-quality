@@ -55,7 +55,7 @@ Nothing on the GPU is changed. It needs Python 3.9+ and no extra packages. Depen
 `/dev/nvidia*` it may need `sudo`.
 
 Tested on Linux with driver 615.78.08: RTX 5090, 5080, 5070 Ti, RTX PRO 6000 Blackwell Max-Q, RTX PRO 4000
-Blackwell SFF and RTX 2000 Ada. On Windows it loads `nvapi64.dll` instead; that path is untested.
+Blackwell SFF and RTX 2000 Ada. On Windows it loads `nvapi64.dll` instead; confirmed working on Windows.
 Older GPUs, or drivers with a different structure layout, show `n/a`.
 
 Run `python3 -m unittest -v` for regression tests using selected driver response bytes; no GPU or NvAPI library

@@ -57,7 +57,7 @@ No cambia nada en la GPU. Necesita Python 3.9+ y ningún paquete extra. Según l
 puede requerir `sudo`.
 
 Probado en Linux con el driver 615.78.08: RTX 5090, 5080, 5070 Ti, RTX PRO 6000 Blackwell Max-Q, RTX PRO 4000
-Blackwell SFF y RTX 2000 Ada. En Windows carga `nvapi64.dll`; ese camino no está probado.
+Blackwell SFF y RTX 2000 Ada. En Windows carga `nvapi64.dll`; confirmado que funciona en Windows.
 GPUs más antiguas, o drivers con otra estructura, muestran `n/d`.
 
 Ejecuta `python3 -m unittest -v` para probar respuestas seleccionadas del driver; no requiere GPU ni biblioteca

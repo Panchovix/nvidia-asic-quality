@@ -16,7 +16,8 @@ $ sudo python3 nvidia_asic_quality.py --lang en
 
 ### How to use
 
-Needs Python 3.9+ and the NVIDIA driver; no extra packages. Depending on `/dev/nvidia*` permissions it may need `sudo`.
+Works on Linux and Windows. Needs Python 3.9+ and the NVIDIA driver; no extra packages. On Linux, depending on
+`/dev/nvidia*` permissions it may need `sudo`.
 
 ```
 python3 nvidia_asic_quality.py              # every GPU
