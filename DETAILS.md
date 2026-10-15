@@ -55,8 +55,8 @@ Nothing on the GPU is changed. It needs Python 3.9+ and no extra packages. Depen
 `/dev/nvidia*` it may need `sudo`.
 
 Tested on Linux with driver 615.78.08: RTX 5090, 5080, 5070 Ti, RTX PRO 6000 Blackwell Max-Q, RTX PRO 4000
-Blackwell SFF and RTX 2000 Ada. On Windows it loads `nvapi64.dll` instead; confirmed working on Windows.
+Blackwell SFF and RTX 2000 Ada. On Windows it loads `nvapi64.dll` instead; confirmed on Windows with GeForce RTX 4090, 5070, 5060 Ti and RTX A2000.
 Older GPUs, or drivers with a different structure layout, show `n/a`.
 
-Run `python3 -m unittest -v` for regression tests using selected driver response bytes; no GPU or NvAPI library
-is required. The fixtures contain no ECIDs.
+Cross-check: on a GeForce RTX 5070 under Windows, the script and HWiNFO report the same ASIC quality (56.5 %)
+and IDDQ (NVVDD 14350, MSVDD 6500).
