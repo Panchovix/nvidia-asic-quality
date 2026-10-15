@@ -34,7 +34,8 @@ looks like about 1 MHz per Speedo point at a given voltage; that is our estimate
 LLM inference barely changes, higher IDDQ (more leakage) partly cancels it under a power limit, and for manual
 overclocking a higher Speedo often means more headroom, but it is still silicon lottery.
 
-**Datacenter GPUs.** Some, such as GB300, do not define Speedo or IDDQ in their VFE tables, so they show `n/a`.
+**Datacenter GPUs.** GB300 reports Speedo through different variables, so this version shows `n/a` for it; support
+is being contributed by ei8 (pull request pending).
 
 **Read-only.** It calls only NvAPI GET functions from the NVIDIA driver (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo and PerfVfeVarGetControl.
@@ -78,7 +79,8 @@ es una estimación nuestra, no una medición. Pasar de 35 % a 60 % son unos 57 p
 cambia; una IDDQ más alta (más fuga) lo compensa en parte bajo un límite de potencia; y para overclock manual un
 Speedo más alto suele dar más margen, pero sigue siendo lotería del silicio.
 
-**GPUs de datacenter.** Algunas, como la GB300, no definen Speedo ni IDDQ en sus tablas VFE, así que muestran `n/d`.
+**GPUs de datacenter.** La GB300 entrega el Speedo por otras variables, así que esta versión muestra `n/d`; ei8 está
+aportando el soporte (pull request pendiente).
 
 **Solo lectura.** Usa únicamente funciones GET de NvAPI del driver de NVIDIA (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo y PerfVfeVarGetControl.
@@ -104,6 +106,7 @@ Compartidos por usuarios; sin ECID. La calidad ASIC solo compara tarjetas del mi
 | aimark42 | Workstation Edition | 2195 | 60.6 % | 67900 | 22650 |
 | aimark42 | Max-Q Workstation Edition | 2191 | 58.8 % | 55800 | 18500 |
 | Shieldstar | Workstation Edition | 2190 | 58.4 % | 59200 | 19150 |
+| ei8 | Max-Q Workstation Edition | 2181 | 54.4 % | 58650 | 18700 |
 | Shieldstar | Workstation Edition | 2179 | 53.6 % | 53900 | 17600 |
 | Shieldstar | Max-Q Workstation Edition | 2176 | 52.2 % | 49500 | 16750 |
 | Shieldstar | Max-Q Workstation Edition | 2172 | 50.5 % | 58200 | 19000 |
@@ -137,6 +140,12 @@ workstation-1 41.3 %, 27.7 %, 47.4 %, 43.5 %; workstation-2 53.6 %, 46.1 %, 31.6
 | GeForce RTX 5070 Ti | 2176 | 2054.8–2287.0 | 52.2 % | 27450 | 11150 |
 | RTX PRO 4000 Blackwell SFF Edition | 2161 | 2054.8–2287.0 | 45.7 % | 21100 | 8450 |
 | RTX 2000 Ada Generation | 2008 | 1901.6–2122.9 | 48.1 % | 9200 | n/a |
+
+### GB300 (ei8, with the pending patch / con el parche pendiente)
+
+| GPU | Die | Speedo | Model range | ASIC quality | IDDQ NVVDD | IDDQ MSVDD |
+|---|---:|---:|---|---:|---:|---:|
+| GB300 | 0 | 2170 | 2071.0–2270.8 | 49.5 % | 30400 | 12100 |
 
 ## License / Licencia
 
