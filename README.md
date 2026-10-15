@@ -66,6 +66,39 @@ Probado en Linux con el driver 615.78.08: RTX 5090, 5080, 5070 Ti, RTX PRO 6000 
 Blackwell SFF y RTX 2000 Ada. En Windows carga `nvapi64.dll`; ese camino no está probado.
 GPUs más antiguas, o drivers con otra estructura, muestran `n/d`.
 
+## Community results / Resultados de la comunidad
+
+Shared by users; ECIDs are left out. ASIC quality only compares cards of the same model.
+Compartidos por usuarios; sin ECID. La calidad ASIC solo compara tarjetas del mismo modelo.
+
+### RTX PRO 6000 Blackwell (Workstation and Max-Q, range 2056.9–2284.9)
+
+| User | GPU | Speedo | ASIC quality | IDDQ NVVDD | IDDQ MSVDD |
+|---|---|---:|---:|---:|---:|
+| Panchovix | Max-Q Workstation Edition | 2197 | 61.5 % | 56450 | 18550 |
+| Panchovix | Max-Q Workstation Edition | 2197 | 61.5 % | 60800 | 20000 |
+| aimark42 | Workstation Edition | 2195 | 60.6 % | 67900 | 22650 |
+| aimark42 | Max-Q Workstation Edition | 2191 | 58.8 % | 55800 | 18500 |
+| crowbill | Workstation Edition | 2171 | 50.0 % | 56100 | 17250 |
+| Panchovix | Max-Q Workstation Edition | 2169 | 49.2 % | 61800 | 20400 |
+| crowbill | Workstation Edition | 2159 | 44.8 % | 58250 | 19350 |
+| crowbill | Workstation Edition | 2151 | 41.3 % | 50150 | 16150 |
+| aimark42 | Max-Q Workstation Edition | 2138 | 35.6 % | 52000 | 17050 |
+| crowbill | Workstation Edition | 2135 | 34.3 % | 45150 | 14300 |
+
+Jack Zampolin, two machines with four GPUs each (ASIC quality only, model not stated):
+workstation-1 41.3 %, 27.7 %, 47.4 %, 43.5 %; workstation-2 53.6 %, 46.1 %, 31.6 %, 66.7 %.
+
+### Other models / Otros modelos (Panchovix)
+
+| GPU | Speedo | Model range | ASIC quality | IDDQ NVVDD | IDDQ MSVDD |
+|---|---:|---|---:|---:|---:|
+| GeForce RTX 5090 | 2113 | 2018.9–2284.9 | 35.4 % | 43750 | 14450 |
+| GeForce RTX 5080 | 2247 | 2054.8–2287.0 | 82.8 % | 35250 | 13650 |
+| GeForce RTX 5070 Ti | 2176 | 2054.8–2287.0 | 52.2 % | 27450 | 11150 |
+| RTX PRO 4000 Blackwell SFF Edition | 2161 | 2054.8–2287.0 | 45.7 % | 21100 | 8450 |
+| RTX 2000 Ada Generation | 2008 | 1901.6–2122.9 | 48.1 % | 9200 | n/a |
+
 ## License / Licencia
 
 MIT. See [LICENSE](LICENSE). / Ver [LICENSE](LICENSE).
