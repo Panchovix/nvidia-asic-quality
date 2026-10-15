@@ -34,7 +34,19 @@ looks like about 1 MHz per Speedo point at a given voltage; that is our estimate
 LLM inference barely changes, higher IDDQ (more leakage) partly cancels it under a power limit, and for manual
 overclocking a higher Speedo often means more headroom, but it is still silicon lottery.
 
-**Datacenter GPUs.** Some, such as GB300, do not define Speedo or IDDQ in their VFE tables, so they show `n/a`.
+**Datacenter GPUs.** Experimental GB300 support reads paired type `0xE` VFE fuse variables and shows one row
+per die. Each die gets its own Speedo, ASIC quality and IDDQ readings; no package-wide quality is calculated.
+For example, one GB300 reports Speedo 2170 / 2182, quality 49.5 % / 55.6 %, NVVDD IDDQ 30400 / 32900 and
+MSVDD IDDQ 12100 / 13200, with a shared model range of 2071.03–2270.77.
+
+The GB300 fuse IDs and layout were inferred from driver responses and NvAPI conversion code on Linux aarch64
+with driver 595.99.02. Other dual-die GPUs, Windows and registry overrides are untested. The override flag for
+paired variables comes from GetControl and is `null` in JSON if that call is unavailable. Other datacenter
+models or unknown fuse IDs can still show `n/a`.
+
+Single-die JSON keeps its `fuses` object. Dual-die GPUs additionally have a `dies` array, with a zero-based `die`
+index and a `fuses` object for each die. `--device` and `--bus` select the GPU and include both dies. The `Die`
+column appears only when at least one selected GPU has paired readings.
 
 **Read-only.** It calls only NvAPI GET functions from the NVIDIA driver (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo and PerfVfeVarGetControl.
@@ -44,6 +56,9 @@ Nothing on the GPU is changed. It needs Python 3.9+ and no extra packages. Depen
 Tested on Linux with driver 615.78.08: RTX 5090, 5080, 5070 Ti, RTX PRO 6000 Blackwell Max-Q, RTX PRO 4000
 Blackwell SFF and RTX 2000 Ada. On Windows it loads `nvapi64.dll` instead; that path is untested.
 Older GPUs, or drivers with a different structure layout, show `n/a`.
+
+Run `python3 -m unittest -v` for regression tests using selected driver response bytes; no GPU or NvAPI library
+is required. The fixtures contain no ECIDs.
 
 ## Español
 
@@ -78,7 +93,19 @@ es una estimación nuestra, no una medición. Pasar de 35 % a 60 % son unos 57 p
 cambia; una IDDQ más alta (más fuga) lo compensa en parte bajo un límite de potencia; y para overclock manual un
 Speedo más alto suele dar más margen, pero sigue siendo lotería del silicio.
 
-**GPUs de datacenter.** Algunas, como la GB300, no definen Speedo ni IDDQ en sus tablas VFE, así que muestran `n/d`.
+**GPUs de datacenter.** El soporte experimental de GB300 lee variables VFE de tipo `0xE` con valores para dos
+dies y muestra una fila por die. Cada die tiene su propio Speedo, calidad ASIC e IDDQ; no se calcula una calidad
+para todo el encapsulado. Por ejemplo, una GB300 entrega Speedo 2170 / 2182, calidad 49.5 % / 55.6 %, IDDQ NVVDD
+30400 / 32900 e IDDQ MSVDD 12100 / 13200, con un rango del modelo compartido de 2071.03–2270.77.
+
+Los IDs de fusibles y la estructura de GB300 se dedujeron de las respuestas del driver y del código de conversión
+de NvAPI en Linux aarch64 con el driver 595.99.02. No se han probado otras GPUs de dos dies, Windows ni overrides
+por registro. La marca de override de las variables pareadas viene de GetControl y es `null` en JSON si esa
+llamada no está disponible. Otros modelos de datacenter o IDs desconocidos todavía pueden mostrar `n/d`.
+
+El JSON de las GPUs de un die conserva su objeto `fuses`. Las GPUs de dos dies agregan un arreglo `dies`, con
+un índice `die` desde cero y un objeto `fuses` para cada die. `--device` y `--bus` seleccionan la GPU e incluyen
+ambos dies. La columna `Die` aparece solo cuando alguna GPU seleccionada tiene lecturas pareadas.
 
 **Solo lectura.** Usa únicamente funciones GET de NvAPI del driver de NVIDIA (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo y PerfVfeVarGetControl.
@@ -88,6 +115,9 @@ puede requerir `sudo`.
 Probado en Linux con el driver 615.78.08: RTX 5090, 5080, 5070 Ti, RTX PRO 6000 Blackwell Max-Q, RTX PRO 4000
 Blackwell SFF y RTX 2000 Ada. En Windows carga `nvapi64.dll`; ese camino no está probado.
 GPUs más antiguas, o drivers con otra estructura, muestran `n/d`.
+
+Ejecuta `python3 -m unittest -v` para probar respuestas seleccionadas del driver; no requiere GPU ni biblioteca
+NvAPI. Los datos de prueba no contienen ECIDs.
 
 ## Community results / Resultados de la comunidad
 
