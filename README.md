@@ -38,11 +38,14 @@ More detail (how much it matters, methodology, datacenter GPUs, read-only calls)
 
 Shared by users; ECIDs are left out. ASIC quality only compares cards of the same model.
 
-### RTX PRO 6000 Blackwell (Workstation and Max-Q, range 2056.9–2284.9)
+### RTX PRO 6000 Blackwell (Workstation, Max-Q and Server, range 2056.9–2284.9)
 
 | User | GPU | Speedo | ASIC quality | IDDQ NVVDD | IDDQ MSVDD |
 |---|---|---:|---:|---:|---:|
 | Shieldstar | Max-Q Workstation Edition | 2213 | 68.5 % | 64350 | 20750 |
+| ufear | Server Edition | 2207 | 65.8 % | 63300 | 20150 |
+| ufear | Max-Q Workstation Edition | 2202 | 63.6 % | 56550 | 18350 |
+| ufear | Server Edition | 2200 | 62.8 % | 61650 | 20000 |
 | Panchovix | Max-Q Workstation Edition | 2197 | 61.5 % | 56450 | 18550 |
 | Panchovix | Max-Q Workstation Edition | 2197 | 61.5 % | 60800 | 20000 |
 | aimark42 | Workstation Edition | 2195 | 60.6 % | 67900 | 22650 |
@@ -51,21 +54,32 @@ Shared by users; ECIDs are left out. ASIC quality only compares cards of the sam
 | el8 | Max-Q Workstation Edition | 2181 | 54.4 % | 58650 | 18700 |
 | Shieldstar | Workstation Edition | 2179 | 53.6 % | 53900 | 17600 |
 | Shieldstar | Max-Q Workstation Edition | 2176 | 52.2 % | 49500 | 16750 |
+| ufear | Server Edition | 2174 | 51.4 % | 60350 | 19200 |
+| ufear | Max-Q Workstation Edition | 2173 | 50.9 % | 52350 | 17050 |
 | Shieldstar | Max-Q Workstation Edition | 2172 | 50.5 % | 58200 | 19000 |
 | crowbill | Workstation Edition | 2171 | 50.0 % | 56100 | 17250 |
+| ufear | Server Edition | 2170 | 49.6 % | 55200 | 17950 |
 | Panchovix | Max-Q Workstation Edition | 2169 | 49.2 % | 61800 | 20400 |
 | crowbill | Workstation Edition | 2159 | 44.8 % | 58250 | 19350 |
+| ufear | Max-Q Workstation Edition | 2159 | 44.8 % | 50700 | 16900 |
+| ufear | Max-Q Workstation Edition | 2157 | 43.9 % | 51200 | 17200 |
 | Shieldstar | Workstation Edition | 2156 | 43.5 % | 53200 | 16800 |
+| ufear | Server Edition | 2155 | 43.0 % | 53150 | 17550 |
 | Shieldstar | Max-Q Workstation Edition | 2153 | 42.1 % | 49900 | 16400 |
+| ufear | Server Edition | 2152 | 41.7 % | 50650 | 16850 |
 | crowbill | Workstation Edition | 2151 | 41.3 % | 50150 | 16150 |
 | Shieldstar | Workstation Edition | 2149 | 40.4 % | 51050 | 16450 |
+| ufear | Max-Q Workstation Edition | 2148 | 40.0 % | 61650 | 21000 |
 | Shieldstar | Workstation Edition | 2145 | 38.6 % | 46350 | 15450 |
+| ufear | Server Edition | 2145 | 38.6 % | 55650 | 17800 |
 | Shieldstar | Max-Q Workstation Edition | 2144 | 38.2 % | 51750 | 16550 |
 | Shieldstar | Max-Q Workstation Edition | 2143 | 37.8 % | 49450 | 16450 |
+| ufear | Max-Q Workstation Edition | 2143 | 37.8 % | 50550 | 16700 |
 | Shieldstar | Workstation Edition | 2142 | 37.3 % | 45850 | 14850 |
 | aimark42 | Max-Q Workstation Edition | 2138 | 35.6 % | 52000 | 17050 |
 | crowbill | Workstation Edition | 2135 | 34.3 % | 45150 | 14300 |
 | Shieldstar | Workstation Edition | 2120 | 27.7 % | 53750 | 17350 |
+| ufear | Server Edition | 2119 | 27.2 % | 45000 | 14700 |
 | Shieldstar | Max-Q Workstation Edition | 2117 | 26.4 % | 44450 | 14600 |
 | Shieldstar | Max-Q Workstation Edition | 2116 | 25.9 % | 52300 | 17050 |
 | Shieldstar | Workstation Edition | 2109 | 22.8 % | 58450 | 18900 |
