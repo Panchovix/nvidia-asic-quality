@@ -25,6 +25,8 @@ FUSE_7 = {0x07: "speedo", 0x10: "nvvdd", 0x11: "msvdd"}
 FOUNDRY = {1: "TSMC", 2: "UMC", 3: "Chartered", 5: "IBM", 6: "SMIC", 7: "TOSHIBA", 8: "SONY"}
 B36 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 GUARD = 4096
+NVAPI_STATUS = {-3: "no implementation", -5: "invalid argument", -6: "device not found",
+                -9: "incompatible struct version", -104: "not supported"}
 
 TEXT = {
     "en": {"device": "#", "bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Model range", "quality": "ASIC quality",
@@ -32,13 +34,15 @@ TEXT = {
            "note": "ASIC quality: where the Speedo sits inside its model's range (same as HWiNFO and mVolt+).\n"
                    "Compare only cards of the same model; each model has its own range.",
            "override": "* Speedo override active: the value is not the fused one.",
-           "none": "No NVIDIA GPU found."},
+           "none": "No NVIDIA GPU found.",
+           "missing": "n/a: the driver does not report a Speedo for this GPU here; --json shows why."},
     "es": {"device": "#", "bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Rango del modelo", "quality": "Calidad ASIC",
            "nvvdd": "IDDQ NVVDD", "msvdd": "IDDQ MSVDD", "ecid": "ECID", "na": "n/d",
            "note": "Calidad ASIC: dónde cae el Speedo dentro del rango de su modelo (igual que HWiNFO y mVolt+).\n"
                    "Compara solo tarjetas del mismo modelo; cada modelo tiene su propio rango.",
            "override": "* Override de Speedo activo: el valor no es el de fábrica.",
-           "none": "No se encontró ninguna GPU NVIDIA."},
+           "none": "No se encontró ninguna GPU NVIDIA.",
+           "missing": "n/d: el driver no entrega un Speedo para esta GPU; --json muestra el motivo."},
 }
 
 
@@ -108,6 +112,13 @@ def ecid_text(q0, q1):
                                      (q1 >> 6) & 63, x, (q1 >> 21) & 0x1FF)
 
 
+def variable_summary(info):
+    """(type, field id, version field id) of every listed VFE variable, for chips this script does not know."""
+    mask = int.from_bytes(info[4:0x24], "little")
+    return sorted({(u32(info, INFO_BASE + i * INFO_STRIDE), info[INFO_BASE + i * INFO_STRIDE + 0x654],
+                    info[INFO_BASE + i * INFO_STRIDE + 0x655]) for i in range(255) if mask >> i & 1})
+
+
 def parse_fuses(info, ctrl):
     """Fuse readings from a VFE variable INFO buffer and its CONTROL buffer (or None)."""
     mask = int.from_bytes(info[4:0x24], "little")
@@ -151,12 +162,16 @@ def read_gpu(api, handle, device, bus, with_ecid):
             q0, q1 = struct.unpack_from("<QI", mfg.data(), 8)
             gpu["ecid"] = ecid_text(q0, q1)
     info = Buffer(INFO_SIZE, INFO_VER)
-    if api.call("VfeVarGetInfo", handle, info) != 0:
+    status = api.call("VfeVarGetInfo", handle, info)
+    if status != 0:
+        gpu["error"] = f"PerfVfeVarGetInfo returned NvAPI status {status} ({NVAPI_STATUS.get(status, 'other')})"
         return gpu
     info_data = info.data()
     ctrl = Buffer(CTRL_SIZE, CTRL_VER, seed=bytes(4) + info_data[4:0x24])
     ctrl_data = ctrl.data() if api.call("VfeVarGetControl", handle, ctrl) == 0 else None
     gpu["fuses"] = parse_fuses(info_data, ctrl_data)
+    if "speedo" not in gpu["fuses"]:
+        gpu["error"] = "no Speedo fuse variable matched; variables found: " + json.dumps(variable_summary(info_data))
     return gpu
 
 
@@ -183,6 +198,7 @@ def table(gpus, text, with_ecid):
                                    for i, (c, w) in enumerate(zip(cells, widths))).rstrip()
     out = [line(titles), line(["-" * w for w in widths])] + [line(row) for row in rows]
     out += ["", text["note"]] + ([text["override"]] if overridden else [])
+    out += [text["missing"]] if any("error" in gpu for gpu in gpus) else []
     return "\n".join(out)
 
 
