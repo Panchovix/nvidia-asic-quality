@@ -1,0 +1,1074 @@
+{
+  "collected_on": "2026-10-15",
+  "contributor": "el8",
+  "script_commit": "ca138b8808e74c790ee6f9a9dd7a07dfe2a639c7",
+  "command": "python3 nvidia_asic_quality.py --diagnostics",
+  "consecutive_captures_identical": true,
+  "driver_version_source": "/proc/driver/nvidia/version",
+  "abi": {
+    "info_version": "0x2f9568",
+    "control_version": "0x29fc8"
+  },
+  "captures_per_system": 5,
+  "gpus": [
+    {
+      "platform": "linux",
+      "machine": "aarch64",
+      "driver_version": "595.99.02",
+      "nvapi_driver_version_status": -3,
+      "name": "RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "vbios_version": "98.02.6a.00.04",
+      "calls": {
+        "GetFullName": 0,
+        "GetVbiosVersionString": 0,
+        "VfeVarGetInfo": 0,
+        "VfeVarGetControl": 0
+      },
+      "fuses": {
+        "nvvdd": {
+          "var": 3,
+          "value": 58650,
+          "raw": 1173,
+          "valid": true,
+          "override": false
+        },
+        "msvdd": {
+          "var": 7,
+          "value": 18700,
+          "raw": 374,
+          "valid": true,
+          "override": false
+        },
+        "oc_bin": {
+          "var": 9,
+          "value": 0,
+          "raw": 0,
+          "valid": true,
+          "override": false,
+          "range": [
+            0.0,
+            15.0
+          ]
+        },
+        "speedo": {
+          "var": 14,
+          "value": 2181,
+          "raw": 2181,
+          "valid": true,
+          "override": false,
+          "range": [
+            2056.929931640625,
+            2284.8701171875
+          ],
+          "quality": 54.4
+        }
+      },
+      "fuse_variables": [
+        {
+          "var": 3,
+          "type": 13,
+          "field_ids": [
+            24
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            3
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 7,
+          "type": 13,
+          "field_ids": [
+            25
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            3
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 9,
+          "type": 13,
+          "field_ids": [
+            27
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        },
+        {
+          "var": 14,
+          "type": 13,
+          "field_ids": [
+            0
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "machine": "aarch64",
+      "driver_version": "595.99.02",
+      "nvapi_driver_version_status": -3,
+      "name": "GB300",
+      "vbios_version": "97.10.77.00.0b",
+      "calls": {
+        "GetFullName": 0,
+        "GetVbiosVersionString": 0,
+        "VfeVarGetInfo": 0,
+        "VfeVarGetControl": 0
+      },
+      "fuses": {},
+      "dies": [
+        {
+          "die": 0,
+          "fuses": {
+            "nvvdd": {
+              "var": 3,
+              "value": 30400,
+              "raw": 608,
+              "valid": true,
+              "override": false
+            },
+            "msvdd": {
+              "var": 7,
+              "value": 12100,
+              "raw": 242,
+              "valid": true,
+              "override": false
+            },
+            "oc_bin": {
+              "var": 9,
+              "value": 0,
+              "raw": 0,
+              "valid": true,
+              "override": false,
+              "range": [
+                0.0,
+                15.0
+              ]
+            },
+            "speedo": {
+              "var": 16,
+              "value": 2170,
+              "raw": 2170,
+              "valid": true,
+              "override": false,
+              "range": [
+                2071.030029296875,
+                2270.77001953125
+              ],
+              "quality": 49.5
+            }
+          }
+        },
+        {
+          "die": 1,
+          "fuses": {
+            "nvvdd": {
+              "var": 3,
+              "value": 32900,
+              "raw": 658,
+              "valid": true,
+              "override": false
+            },
+            "msvdd": {
+              "var": 7,
+              "value": 13200,
+              "raw": 264,
+              "valid": true,
+              "override": false
+            },
+            "oc_bin": {
+              "var": 9,
+              "value": 0,
+              "raw": 0,
+              "valid": true,
+              "override": false,
+              "range": [
+                0.0,
+                15.0
+              ]
+            },
+            "speedo": {
+              "var": 16,
+              "value": 2182,
+              "raw": 2182,
+              "valid": true,
+              "override": false,
+              "range": [
+                2071.030029296875,
+                2270.77001953125
+              ],
+              "quality": 55.6
+            }
+          }
+        }
+      ],
+      "fuse_variables": [
+        {
+          "var": 3,
+          "type": 14,
+          "field_ids": [
+            75,
+            125
+          ],
+          "version_field_ids": [
+            61,
+            111
+          ],
+          "fuse_versions": [
+            1,
+            1
+          ],
+          "version_check_done": [
+            true,
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 7,
+          "type": 14,
+          "field_ids": [
+            76,
+            126
+          ],
+          "version_field_ids": [
+            61,
+            111
+          ],
+          "fuse_versions": [
+            1,
+            1
+          ],
+          "version_check_done": [
+            true,
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 9,
+          "type": 14,
+          "field_ids": [
+            78,
+            128
+          ],
+          "version_field_ids": [
+            59,
+            109
+          ],
+          "fuse_versions": [
+            1,
+            1
+          ],
+          "version_check_done": [
+            true,
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        },
+        {
+          "var": 16,
+          "type": 14,
+          "field_ids": [
+            58,
+            108
+          ],
+          "version_field_ids": [
+            59,
+            109
+          ],
+          "fuse_versions": [
+            1,
+            1
+          ],
+          "version_check_done": [
+            true,
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "machine": "aarch64",
+      "driver_version": "580.178.04",
+      "nvapi_driver_version_status": -3,
+      "name": "GB10",
+      "vbios_version": "9a.0b.2d.00.00",
+      "calls": {
+        "GetFullName": 0,
+        "GetVbiosVersionString": 0,
+        "VfeVarGetInfo": 0,
+        "VfeVarGetControl": 0
+      },
+      "fuses": {
+        "nvvdd": {
+          "var": 3,
+          "value": 10678,
+          "raw": 5339,
+          "valid": true,
+          "override": false
+        },
+        "msvdd": {
+          "var": 7,
+          "value": 3962,
+          "raw": 1981,
+          "valid": true,
+          "override": false
+        },
+        "oc_bin": {
+          "var": 9,
+          "value": 0,
+          "raw": 0,
+          "valid": true,
+          "override": false,
+          "range": [
+            0.0,
+            15.0
+          ]
+        },
+        "speedo": {
+          "var": 16,
+          "value": 2270,
+          "raw": 2270,
+          "valid": true,
+          "override": false,
+          "range": [
+            2130.860107421875,
+            2390.0
+          ],
+          "quality": 53.7
+        }
+      },
+      "fuse_variables": [
+        {
+          "var": 3,
+          "type": 13,
+          "field_ids": [
+            24
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 7,
+          "type": 13,
+          "field_ids": [
+            25
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 9,
+          "type": 13,
+          "field_ids": [
+            27
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        },
+        {
+          "var": 16,
+          "type": 13,
+          "field_ids": [
+            0
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "machine": "aarch64",
+      "driver_version": "580.178.04",
+      "nvapi_driver_version_status": -3,
+      "name": "GB10",
+      "vbios_version": "9a.0b.2d.00.00",
+      "calls": {
+        "GetFullName": 0,
+        "GetVbiosVersionString": 0,
+        "VfeVarGetInfo": 0,
+        "VfeVarGetControl": 0
+      },
+      "fuses": {
+        "nvvdd": {
+          "var": 3,
+          "value": 12120,
+          "raw": 6060,
+          "valid": true,
+          "override": false
+        },
+        "msvdd": {
+          "var": 7,
+          "value": 4162,
+          "raw": 2081,
+          "valid": true,
+          "override": false
+        },
+        "oc_bin": {
+          "var": 9,
+          "value": 0,
+          "raw": 0,
+          "valid": true,
+          "override": false,
+          "range": [
+            0.0,
+            15.0
+          ]
+        },
+        "speedo": {
+          "var": 16,
+          "value": 2201,
+          "raw": 2201,
+          "valid": true,
+          "override": false,
+          "range": [
+            2130.860107421875,
+            2390.0
+          ],
+          "quality": 27.1
+        }
+      },
+      "fuse_variables": [
+        {
+          "var": 3,
+          "type": 13,
+          "field_ids": [
+            24
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 7,
+          "type": 13,
+          "field_ids": [
+            25
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 9,
+          "type": 13,
+          "field_ids": [
+            27
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        },
+        {
+          "var": 16,
+          "type": 13,
+          "field_ids": [
+            0
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "machine": "aarch64",
+      "driver_version": "580.178.04",
+      "nvapi_driver_version_status": -3,
+      "name": "GB10",
+      "vbios_version": "9a.0b.2d.00.00",
+      "calls": {
+        "GetFullName": 0,
+        "GetVbiosVersionString": 0,
+        "VfeVarGetInfo": 0,
+        "VfeVarGetControl": 0
+      },
+      "fuses": {
+        "nvvdd": {
+          "var": 3,
+          "value": 13294,
+          "raw": 6647,
+          "valid": true,
+          "override": false
+        },
+        "msvdd": {
+          "var": 7,
+          "value": 4632,
+          "raw": 2316,
+          "valid": true,
+          "override": false
+        },
+        "oc_bin": {
+          "var": 9,
+          "value": 0,
+          "raw": 0,
+          "valid": true,
+          "override": false,
+          "range": [
+            0.0,
+            15.0
+          ]
+        },
+        "speedo": {
+          "var": 16,
+          "value": 2310,
+          "raw": 2310,
+          "valid": true,
+          "override": false,
+          "range": [
+            2130.860107421875,
+            2390.0
+          ],
+          "quality": 69.1
+        }
+      },
+      "fuse_variables": [
+        {
+          "var": 3,
+          "type": 13,
+          "field_ids": [
+            24
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 7,
+          "type": 13,
+          "field_ids": [
+            25
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 9,
+          "type": 13,
+          "field_ids": [
+            27
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        },
+        {
+          "var": 16,
+          "type": 13,
+          "field_ids": [
+            0
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "machine": "aarch64",
+      "driver_version": "580.178.04",
+      "nvapi_driver_version_status": -3,
+      "name": "GB10",
+      "vbios_version": "9a.0b.2d.00.00",
+      "calls": {
+        "GetFullName": 0,
+        "GetVbiosVersionString": 0,
+        "VfeVarGetInfo": 0,
+        "VfeVarGetControl": 0
+      },
+      "fuses": {
+        "nvvdd": {
+          "var": 3,
+          "value": 10326,
+          "raw": 5163,
+          "valid": true,
+          "override": false
+        },
+        "msvdd": {
+          "var": 7,
+          "value": 3690,
+          "raw": 1845,
+          "valid": true,
+          "override": false
+        },
+        "oc_bin": {
+          "var": 9,
+          "value": 0,
+          "raw": 0,
+          "valid": true,
+          "override": false,
+          "range": [
+            0.0,
+            15.0
+          ]
+        },
+        "speedo": {
+          "var": 16,
+          "value": 2259,
+          "raw": 2259,
+          "valid": true,
+          "override": false,
+          "range": [
+            2130.860107421875,
+            2390.0
+          ],
+          "quality": 49.4
+        }
+      },
+      "fuse_variables": [
+        {
+          "var": 3,
+          "type": 13,
+          "field_ids": [
+            24
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 7,
+          "type": 13,
+          "field_ids": [
+            25
+          ],
+          "version_field_ids": [
+            3
+          ],
+          "fuse_versions": [
+            1
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 9,
+          "type": 13,
+          "field_ids": [
+            27
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        },
+        {
+          "var": 16,
+          "type": 13,
+          "field_ids": [
+            0
+          ],
+          "version_field_ids": [
+            1
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "machine": "x86_64",
+      "driver_version": "610.57.04",
+      "nvapi_driver_version_status": -3,
+      "name": "GeForce RTX 4070 Ti SUPER",
+      "vbios_version": "95.03.45.80.89",
+      "calls": {
+        "GetFullName": 0,
+        "GetVbiosVersionString": 0,
+        "VfeVarGetInfo": 0,
+        "VfeVarGetControl": 0
+      },
+      "fuses": {
+        "nvvdd": {
+          "var": 3,
+          "value": 17800,
+          "raw": 356,
+          "valid": true,
+          "override": false
+        },
+        "msvdd": {
+          "var": 7,
+          "value": 97700,
+          "raw": 1954,
+          "valid": true,
+          "override": false
+        },
+        "speedo": {
+          "var": 11,
+          "value": 1954,
+          "raw": 1954,
+          "valid": true,
+          "override": false,
+          "range": [
+            1871.074951171875,
+            2109.300048828125
+          ],
+          "quality": 34.8
+        }
+      },
+      "fuse_variables": [
+        {
+          "var": 3,
+          "type": 7,
+          "field_ids": [
+            16
+          ],
+          "version_field_ids": [
+            10
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 7,
+          "type": 7,
+          "field_ids": [
+            17
+          ],
+          "version_field_ids": [
+            10
+          ],
+          "fuse_versions": [
+            2
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 254,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": true
+          }
+        },
+        {
+          "var": 11,
+          "type": 7,
+          "field_ids": [
+            7
+          ],
+          "version_field_ids": [
+            8
+          ],
+          "fuse_versions": [
+            5
+          ],
+          "version_check_done": [
+            true
+          ],
+          "version_check": {
+            "expected": 255,
+            "is_mask": true,
+            "enabled": true,
+            "ignore": false,
+            "use_default_on_failure": false
+          }
+        }
+      ]
+    }
+  ]
+}

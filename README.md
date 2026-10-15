@@ -166,6 +166,7 @@ Compartidos por usuarios; sin ECID. La calidad ASIC solo compara tarjetas del mi
 | Panchovix | Max-Q Workstation Edition | 2197 | 61.5 % | 60800 | 20000 |
 | aimark42 | Workstation Edition | 2195 | 60.6 % | 67900 | 22650 |
 | aimark42 | Max-Q Workstation Edition | 2191 | 58.8 % | 55800 | 18500 |
+| el8 | Max-Q Workstation Edition | 2181 | 54.4 % | 58650 | 18700 |
 | crowbill | Workstation Edition | 2171 | 50.0 % | 56100 | 17250 |
 | Panchovix | Max-Q Workstation Edition | 2169 | 49.2 % | 61800 | 20400 |
 | crowbill | Workstation Edition | 2159 | 44.8 % | 58250 | 19350 |
@@ -175,6 +176,45 @@ Compartidos por usuarios; sin ECID. La calidad ASIC solo compara tarjetas del mi
 
 Jack Zampolin, two machines with four GPUs each (ASIC quality only, model not stated):
 workstation-1 41.3 %, 27.7 %, 47.4 %, 43.5 %; workstation-2 53.6 %, 46.1 %, 31.6 %, 66.7 %.
+
+### Spark (GB10, range 2130.86–2390.00)
+
+| User | GPU | Speedo | ASIC quality | IDDQ NVVDD | IDDQ MSVDD |
+|---|---|---:|---:|---:|---:|
+| el8 | GB10 | 2310 | 69.1 % | 13294 | 4632 |
+| el8 | GB10 | 2270 | 53.7 % | 10678 | 3962 |
+| el8 | GB10 | 2259 | 49.4 % | 10326 | 3690 |
+| el8 | GB10 | 2201 | 27.1 % | 12120 | 4162 |
+
+Linux aarch64, driver 580.178.04, VBIOS 9a.0b.2d.00.00.
+
+### Ada
+
+| User | GPU | Speedo | Driver range | ASIC quality | IDDQ NVVDD | IDDQ MSVDD |
+|---|---|---:|---|---:|---:|---:|
+| el8 | GeForce RTX 4070 Ti SUPER | 1954 | 1871.07–2109.30 | 34.8 % | 17800 | 97700 |
+
+Linux x86_64, driver 610.57.04, VBIOS 95.03.45.80.89.
+
+### Blackwell B300 (GB300, experimental, range 2071.03–2270.77)
+
+| User | GPU | Speedo | ASIC quality | IDDQ NVVDD | IDDQ MSVDD |
+|---|---|---:|---:|---:|---:|
+| el8 | GB300, die 0 | 2170 | 49.5 % | 30400 | 12100 |
+| el8 | GB300, die 1 | 2182 | 55.6 % | 32900 | 13200 |
+
+Linux aarch64, driver 595.99.02, VBIOS 97.10.77.00.0b. Each row is one die of the same GPU.
+Cada fila corresponde a un die de la misma GPU.
+
+The el8 results were collected on 2026-10-15. Five consecutive captures per system were identical, fuse version
+checks passed and no overrides were reported. The RTX PRO 6000 used Linux aarch64, driver 595.99.02 and VBIOS
+98.02.6a.00.04. The [JSON results](results/el8-2026-10-15.json) preserve unrounded bounds, raw values, version
+checks and call statuses. ECIDs and hostnames are omitted.
+
+Los resultados de el8 se capturaron el 2026-10-15. Cinco capturas consecutivas por equipo fueron idénticas,
+las comprobaciones de versión pasaron y no se reportaron overrides. La RTX PRO 6000 usó Linux aarch64, driver
+595.99.02 y VBIOS 98.02.6a.00.04. Los [resultados JSON](results/el8-2026-10-15.json) conservan límites sin redondear,
+valores crudos, comprobaciones de versión y estados de llamadas. Se omiten ECIDs y nombres de equipos.
 
 ### Other models / Otros modelos (Panchovix)
 
