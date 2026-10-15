@@ -27,13 +27,13 @@ B36 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 GUARD = 4096
 
 TEXT = {
-    "en": {"bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Model range", "quality": "ASIC quality",
+    "en": {"device": "#", "bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Model range", "quality": "ASIC quality",
            "nvvdd": "IDDQ NVVDD", "msvdd": "IDDQ MSVDD", "ecid": "ECID", "na": "n/a",
            "note": "ASIC quality: where the Speedo sits inside its model's range (same as HWiNFO and mVolt+).\n"
                    "Compare only cards of the same model; each model has its own range.",
            "override": "* Speedo override active: the value is not the fused one.",
            "none": "No NVIDIA GPU found."},
-    "es": {"bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Rango del modelo", "quality": "Calidad ASIC",
+    "es": {"device": "#", "bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Rango del modelo", "quality": "Calidad ASIC",
            "nvvdd": "IDDQ NVVDD", "msvdd": "IDDQ MSVDD", "ecid": "ECID", "na": "n/d",
            "note": "Calidad ASIC: dónde cae el Speedo dentro del rango de su modelo (igual que HWiNFO y mVolt+).\n"
                    "Compara solo tarjetas del mismo modelo; cada modelo tiene su propio rango.",
@@ -140,11 +140,10 @@ def parse_fuses(info, ctrl):
     return fuses
 
 
-def read_gpu(api, handle, with_ecid):
-    bus, name = Buffer(4), Buffer(64)
-    api.call("GetBusId", handle, bus)
+def read_gpu(api, handle, device, bus, with_ecid):
+    name = Buffer(64)
     api.call("GetFullName", handle, name)
-    gpu = {"bus": "%02x" % u32(bus.data(), 0),
+    gpu = {"device": device, "bus": "%02x" % bus,
            "name": name.data().split(b"\0")[0].decode(errors="replace").removeprefix("NVIDIA ")}
     if with_ecid:
         mfg = Buffer(MFG_SIZE, MFG_VER)
@@ -163,7 +162,7 @@ def read_gpu(api, handle, with_ecid):
 
 def table(gpus, text, with_ecid):
     na = text["na"]
-    header = ["bus", "gpu", "speedo", "range", "quality", "nvvdd", "msvdd"] + (["ecid"] if with_ecid else [])
+    header = ["device", "bus", "gpu", "speedo", "range", "quality", "nvvdd", "msvdd"] + (["ecid"] if with_ecid else [])
     rows, overridden = [], False
     for gpu in gpus:
         fuses = gpu.get("fuses", {})
@@ -171,7 +170,7 @@ def table(gpus, text, with_ecid):
         mark = "*" if any(f.get("override") for f in fuses.values()) else ""
         overridden |= bool(mark)
         quality = speedo.get("quality")
-        rows.append([gpu["bus"], gpu["name"], f"{speedo['value']}{mark}" if speedo else na,
+        rows.append([str(gpu["device"]), gpu["bus"], gpu["name"], f"{speedo['value']}{mark}" if speedo else na,
                      "%.1f-%.1f" % tuple(speedo["range"]) if "range" in speedo else na,
                      f"{quality:.1f} %" if quality is not None else na,
                      str(fuses["nvvdd"]["value"]) if "nvvdd" in fuses else na,
@@ -179,7 +178,7 @@ def table(gpus, text, with_ecid):
                     + ([gpu.get("ecid", na)] if with_ecid else []))
     titles = [text[key] for key in header]
     widths = [max(len(row[i]) for row in rows + [titles]) for i in range(len(titles))]
-    right = {2, 4, 5, 6}
+    right = {0, 3, 5, 6, 7}
     line = lambda cells: "  ".join(c.rjust(w) if i in right else c.ljust(w)
                                    for i, (c, w) in enumerate(zip(cells, widths))).rstrip()
     out = [line(titles), line(["-" * w for w in widths])] + [line(row) for row in rows]
@@ -191,19 +190,21 @@ def main():
     default_lang = "es" if os.environ.get("LC_ALL", os.environ.get("LANG", "")).startswith("es") else "en"
     parser = argparse.ArgumentParser(description="NVIDIA Speedo / ASIC quality / IDDQ (read-only)")
     parser.add_argument("--lang", choices=sorted(TEXT), default=default_lang)
+    parser.add_argument("--device", type=int, help="only this GPU, numbered like nvidia-smi (PCI order), e.g. 0")
     parser.add_argument("--bus", type=lambda value: int(value, 16), help="only this PCI bus (hex), e.g. 09")
     parser.add_argument("--ecid", action="store_true", help="also show the chip ECID (wafer, lot, x/y)")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
     api = NvApi()
-    gpus = []
+    found = []
     for handle in api.gpus():
         bus = Buffer(4)
-        if args.bus is not None and (api.call("GetBusId", handle, bus) != 0 or u32(bus.data(), 0) != args.bus):
-            continue
-        gpus.append(read_gpu(api, handle, args.ecid))
-    gpus.sort(key=lambda gpu: int(gpu["bus"], 16))
+        if api.call("GetBusId", handle, bus) == 0:
+            found.append((u32(bus.data(), 0), handle))
+    found.sort(key=lambda item: item[0])  # same numbering as nvidia-smi
+    gpus = [read_gpu(api, handle, device, bus, args.ecid) for device, (bus, handle) in enumerate(found)
+            if (args.device is None or device == args.device) and (args.bus is None or bus == args.bus)]
     if args.json:
         print(json.dumps(gpus, indent=1))
     elif not gpus:

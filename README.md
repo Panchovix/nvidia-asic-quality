@@ -9,12 +9,12 @@ A small read-only script that shows, for each NVIDIA GPU, the **Speedo**, its **
 
 ```
 $ sudo python3 nvidia_asic_quality.py --lang en
-Bus  GPU                                               Speedo  Model range    ASIC quality  IDDQ NVVDD  IDDQ MSVDD
----  ------------------------------------------------  ------  -------------  ------------  ----------  ----------
-03   RTX PRO 6000 Blackwell Max-Q Workstation Edition    2169  2056.9-2284.9        49.2 %       61800       20400
-06   GeForce RTX 5090                                    2113  2018.9-2284.9        35.4 %       43750       14450
-07   GeForce RTX 5080                                    2247  2054.8-2287.0        82.8 %       35250       13650
-13   RTX 2000 Ada Generation                             2008  1901.6-2122.9        48.1 %        9200         n/a
+#  Bus  GPU                                               Speedo  Model range    ASIC quality  IDDQ NVVDD  IDDQ MSVDD
+-  ---  ------------------------------------------------  ------  -------------  ------------  ----------  ----------
+0  03   RTX PRO 6000 Blackwell Max-Q Workstation Edition    2169  2056.9-2284.9        49.2 %       61800       20400
+3  06   GeForce RTX 5090                                    2113  2018.9-2284.9        35.4 %       43750       14450
+4  07   GeForce RTX 5080                                    2247  2054.8-2287.0        82.8 %       35250       13650
+7  13   RTX 2000 Ada Generation                             2008  1901.6-2122.9        48.1 %        9200         n/a
 ```
 
 - **Speedo**: a speed value written into the chip's fuses at the factory. Higher means faster silicon.
@@ -22,7 +22,8 @@ Bus  GPU                                               Speedo  Model range    AS
   is fixed for each model. Only compare cards of the same model.
 - **IDDQ**: leakage current per rail, also from the fuses. It is larger on bigger chips.
 - `--ecid` also shows the chip ID: foundry, lot, wafer and x/y position on the wafer.
-- `--bus 07` reads only one GPU; `--json` prints machine-readable output.
+- By default it reads every GPU. `--device 4` reads only one, numbered like `nvidia-smi` (the `#` column);
+  `--bus 07` selects by PCI bus instead. `--json` prints machine-readable output.
 
 **Read-only.** It calls only NvAPI GET functions from the NVIDIA driver (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo and PerfVfeVarGetControl.
@@ -40,12 +41,12 @@ Un script pequeño, solo de lectura, que muestra para cada GPU NVIDIA el **Speed
 
 ```
 $ sudo python3 nvidia_asic_quality.py --lang es
-Bus  GPU                                               Speedo  Rango del modelo  Calidad ASIC  IDDQ NVVDD  IDDQ MSVDD
----  ------------------------------------------------  ------  ----------------  ------------  ----------  ----------
-03   RTX PRO 6000 Blackwell Max-Q Workstation Edition    2169  2056.9-2284.9           49.2 %       61800       20400
-06   GeForce RTX 5090                                    2113  2018.9-2284.9           35.4 %       43750       14450
-07   GeForce RTX 5080                                    2247  2054.8-2287.0           82.8 %       35250       13650
-13   RTX 2000 Ada Generation                             2008  1901.6-2122.9           48.1 %        9200         n/d
+#  Bus  GPU                                               Speedo  Rango del modelo  Calidad ASIC  IDDQ NVVDD  IDDQ MSVDD
+-  ---  ------------------------------------------------  ------  ----------------  ------------  ----------  ----------
+0  03   RTX PRO 6000 Blackwell Max-Q Workstation Edition    2169  2056.9-2284.9           49.2 %       61800       20400
+3  06   GeForce RTX 5090                                    2113  2018.9-2284.9           35.4 %       43750       14450
+4  07   GeForce RTX 5080                                    2247  2054.8-2287.0           82.8 %       35250       13650
+7  13   RTX 2000 Ada Generation                             2008  1901.6-2122.9           48.1 %        9200         n/d
 ```
 
 - **Speedo**: un valor de velocidad grabado en fábrica en los fusibles del chip. Más alto significa silicio más rápido.
@@ -53,7 +54,8 @@ Bus  GPU                                               Speedo  Rango del modelo 
   tarjeta) y es fijo para cada modelo. Compara solo tarjetas del mismo modelo.
 - **IDDQ**: corriente de fuga por riel, también de los fusibles. Es mayor en chips más grandes.
 - `--ecid` muestra además el ID del chip: fundición, lote, oblea y posición x/y en la oblea.
-- `--bus 07` lee solo una GPU; `--json` entrega la salida en JSON.
+- Por defecto lee todas las GPUs. `--device 4` lee solo una, con la misma numeración de `nvidia-smi` (la
+  columna `#`); `--bus 07` la elige por bus PCI. `--json` entrega la salida en JSON.
 
 **Solo lectura.** Usa únicamente funciones GET de NvAPI del driver de NVIDIA (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo y PerfVfeVarGetControl.
@@ -63,3 +65,7 @@ puede requerir `sudo`.
 Probado en Linux con el driver 615.78.08: RTX 5090, 5080, 5070 Ti, RTX PRO 6000 Blackwell Max-Q, RTX PRO 4000
 Blackwell SFF y RTX 2000 Ada. En Windows carga `nvapi64.dll`; ese camino no está probado.
 GPUs más antiguas, o drivers con otra estructura, muestran `n/d`.
+
+## License / Licencia
+
+MIT. See [LICENSE](LICENSE). / Ver [LICENSE](LICENSE).
