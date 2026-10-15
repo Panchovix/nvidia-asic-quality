@@ -113,7 +113,8 @@ class NvApi:
         if sys.platform == "linux":
             try:
                 with open("/proc/driver/nvidia/version", encoding="ascii") as driver:
-                    result["kernel_module"] = driver.readline().strip()
+                    # Drop the "(user@host)  date" suffix that locally built modules carry.
+                    result["kernel_module"] = driver.readline().split("(", 1)[0].strip()
             except OSError:
                 pass
         return result
@@ -277,7 +278,8 @@ def table(gpus, text, with_ecid):
             mark = "*" if any(f.get("override") for f in fuses.values()) else ""
             overridden |= bool(mark)
             quality = speedo.get("quality")
-            value = lambda key: str(fuses[key]["value"]) if fuses.get(key, {}).get("valid") else na
+            # An IDDQ of 0 means the fuse is not programmed (e.g. no separate MSVDD on Ada), not zero leakage.
+            value = lambda key: str(fuses[key]["value"]) if fuses.get(key, {}).get("valid") and fuses[key]["value"] else na
             rows.append([str(gpu["device"]), gpu["bus"], gpu["name"]]
                         + ([str(die.get("die", "-"))] if with_dies else [])
                         + [f"{value('speedo')}{mark}" if speedo.get("valid") else na,
