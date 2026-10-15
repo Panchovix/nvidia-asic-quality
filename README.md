@@ -25,6 +25,17 @@ $ sudo python3 nvidia_asic_quality.py --lang en
 - By default it reads every GPU. `--device 4` reads only one, by its number in the `#` column (PCI order,
   normally the same as `nvidia-smi`); `--bus 07` selects by PCI bus instead. `--json` prints machine-readable output.
 
+**How much does it matter?** Usually a few percent at most at stock settings. The driver already builds each
+card's V/F curve from its own Speedo, and every card has the same boost clock cap, so a card that is not power or
+thermal limited reaches that cap either way. It shows up under a power limit (for example a 300 W Max-Q or a long
+compute load): there the better chip holds a slightly higher clock at the same watts. From the VBIOS equations it
+looks like about 1 MHz per Speedo point at a given voltage; that is our estimate, not a measurement. Going from
+35 % to 60 % is about 57 Speedo points, so roughly 50–60 MHz, or about 2 % core clock. Memory-bound work such as
+LLM inference barely changes, higher IDDQ (more leakage) partly cancels it under a power limit, and for manual
+overclocking a higher Speedo often means more headroom, but it is still silicon lottery.
+
+**Datacenter GPUs.** Some, such as GB300, do not define Speedo or IDDQ in their VFE tables, so they show `n/a`.
+
 **Read-only.** It calls only NvAPI GET functions from the NVIDIA driver (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo and PerfVfeVarGetControl.
 Nothing on the GPU is changed. It needs Python 3.9+ and no extra packages. Depending on the permissions of
@@ -56,6 +67,18 @@ $ sudo python3 nvidia_asic_quality.py --lang es
 - `--ecid` muestra además el ID del chip: fundición, lote, oblea y posición x/y en la oblea.
 - Por defecto lee todas las GPUs. `--device 4` lee solo una, según su número en la columna `#` (orden PCI,
   normalmente el mismo de `nvidia-smi`); `--bus 07` la elige por bus PCI. `--json` entrega la salida en JSON.
+
+**¿Cuánto importa?** Normalmente unos pocos por ciento como mucho, con la configuración de fábrica. El driver ya
+arma la curva V/F de cada tarjeta con su propio Speedo, y todas tienen el mismo tope de boost, así que una tarjeta
+que no está limitada por potencia o temperatura llega a ese tope igual. Se nota bajo un límite de potencia (por
+ejemplo una Max-Q de 300 W o una carga de cómputo larga): ahí el chip mejor mantiene un reloj algo más alto con los
+mismos watts. Según las ecuaciones de la VBIOS parece ser cerca de 1 MHz por punto de Speedo a un mismo voltaje;
+es una estimación nuestra, no una medición. Pasar de 35 % a 60 % son unos 57 puntos de Speedo, o sea unos
+50–60 MHz, cerca de 2 % de reloj del núcleo. El trabajo limitado por memoria, como la inferencia de LLM, casi no
+cambia; una IDDQ más alta (más fuga) lo compensa en parte bajo un límite de potencia; y para overclock manual un
+Speedo más alto suele dar más margen, pero sigue siendo lotería del silicio.
+
+**GPUs de datacenter.** Algunas, como la GB300, no definen Speedo ni IDDQ en sus tablas VFE, así que muestran `n/d`.
 
 **Solo lectura.** Usa únicamente funciones GET de NvAPI del driver de NVIDIA (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo y PerfVfeVarGetControl.
