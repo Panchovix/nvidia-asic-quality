@@ -190,7 +190,7 @@ def main():
     default_lang = "es" if os.environ.get("LC_ALL", os.environ.get("LANG", "")).startswith("es") else "en"
     parser = argparse.ArgumentParser(description="NVIDIA Speedo / ASIC quality / IDDQ (read-only)")
     parser.add_argument("--lang", choices=sorted(TEXT), default=default_lang)
-    parser.add_argument("--device", type=int, help="only this GPU, numbered like nvidia-smi (PCI order), e.g. 0")
+    parser.add_argument("--device", type=int, help="only this GPU, by its number in the # column (PCI order, normally the same as nvidia-smi)")
     parser.add_argument("--bus", type=lambda value: int(value, 16), help="only this PCI bus (hex), e.g. 09")
     parser.add_argument("--ecid", action="store_true", help="also show the chip ECID (wafer, lot, x/y)")
     parser.add_argument("--json", action="store_true")
@@ -202,7 +202,7 @@ def main():
         bus = Buffer(4)
         if api.call("GetBusId", handle, bus) == 0:
             found.append((u32(bus.data(), 0), handle))
-    found.sort(key=lambda item: item[0])  # same numbering as nvidia-smi
+    found.sort(key=lambda item: item[0])  # PCI order, normally the nvidia-smi numbering
     gpus = [read_gpu(api, handle, device, bus, args.ecid) for device, (bus, handle) in enumerate(found)
             if (args.device is None or device == args.device) and (args.bus is None or bus == args.bus)]
     if args.json:

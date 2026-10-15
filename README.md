@@ -22,8 +22,8 @@ $ sudo python3 nvidia_asic_quality.py --lang en
   is fixed for each model. Only compare cards of the same model.
 - **IDDQ**: leakage current per rail, also from the fuses. It is larger on bigger chips.
 - `--ecid` also shows the chip ID: foundry, lot, wafer and x/y position on the wafer.
-- By default it reads every GPU. `--device 4` reads only one, numbered like `nvidia-smi` (the `#` column);
-  `--bus 07` selects by PCI bus instead. `--json` prints machine-readable output.
+- By default it reads every GPU. `--device 4` reads only one, by its number in the `#` column (PCI order,
+  normally the same as `nvidia-smi`); `--bus 07` selects by PCI bus instead. `--json` prints machine-readable output.
 
 **Read-only.** It calls only NvAPI GET functions from the NVIDIA driver (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo and PerfVfeVarGetControl.
@@ -54,8 +54,8 @@ $ sudo python3 nvidia_asic_quality.py --lang es
   tarjeta) y es fijo para cada modelo. Compara solo tarjetas del mismo modelo.
 - **IDDQ**: corriente de fuga por riel, también de los fusibles. Es mayor en chips más grandes.
 - `--ecid` muestra además el ID del chip: fundición, lote, oblea y posición x/y en la oblea.
-- Por defecto lee todas las GPUs. `--device 4` lee solo una, con la misma numeración de `nvidia-smi` (la
-  columna `#`); `--bus 07` la elige por bus PCI. `--json` entrega la salida en JSON.
+- Por defecto lee todas las GPUs. `--device 4` lee solo una, según su número en la columna `#` (orden PCI,
+  normalmente el mismo de `nvidia-smi`); `--bus 07` la elige por bus PCI. `--json` entrega la salida en JSON.
 
 **Solo lectura.** Usa únicamente funciones GET de NvAPI del driver de NVIDIA (`libnvidia-api.so.1`): Initialize,
 EnumPhysicalGPUs, GetBusId, GetFullName, ManufacturingInfo, PerfVfeVarGetInfo y PerfVfeVarGetControl.
