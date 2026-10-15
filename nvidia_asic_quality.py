@@ -3,19 +3,22 @@
 
 Uses only NvAPI GET functions from the NVIDIA driver (libnvidia-api.so.1 on Linux,
 nvapi64.dll on Windows). Nothing on the GPU is changed.
-ASIC quality = 100 * (Speedo - min) / (max - min), with the model range the driver reports.
+ASIC quality = 100 * (Speedo - min) / (max - min), using driver-reported bounds.
+This normalization is not a percentile or a measured performance score.
 """
 import argparse
 import ctypes as C
 import json
 import math
 import os
+import platform
 import struct
 import sys
 
 IDS = {"Initialize": 0x0150E828, "EnumPhysicalGPUs": 0xE5AC921F, "GetBusId": 0x1BE0B8E5,
        "GetFullName": 0xCEEE8E9F, "ManufacturingInfo": 0xA4218928,
-       "VfeVarGetInfo": 0xB9DA41D6, "VfeVarGetControl": 0x5D387298}
+       "VfeVarGetInfo": 0xB9DA41D6, "VfeVarGetControl": 0x5D387298,
+       "GetDriverAndBranchVersion": 0x2926AAAD, "GetVbiosVersionString": 0xA561FD7D}
 MFG_VER, MFG_SIZE = 0x10018, 0x18
 INFO_VER, INFO_SIZE, INFO_BASE, INFO_STRIDE = 0x2F9568, 0x2B9568, 0x128, 0x2BC0
 CTRL_VER, CTRL_SIZE, CTRL_BASE, CTRL_STRIDE = 0x29FC8, 0x9FC8, 0x68, 0xA0
@@ -34,18 +37,18 @@ NVAPI_STATUS = {-3: "no implementation", -5: "invalid argument", -6: "device not
                 -9: "incompatible struct version", -104: "not supported"}
 
 TEXT = {
-    "en": {"device": "#", "bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Model range", "quality": "ASIC quality",
+    "en": {"device": "#", "bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Driver range", "quality": "ASIC quality",
            "nvvdd": "IDDQ NVVDD", "msvdd": "IDDQ MSVDD", "ecid": "ECID", "die": "Die", "na": "n/a",
-           "note": "ASIC quality: where the Speedo sits inside its model's range (same as HWiNFO and mVolt+).\n"
-                   "Compare only cards of the same model; each model has its own range.",
+           "note": "ASIC quality: Speedo normalized to driver-reported bounds; not a percentile or performance score.\n"
+                   "Compare only matching GPU models and VBIOS/driver versions.",
            "override": "* Fuse override active: a value may differ from the chip's fuses.",
            "per_die": "Dual-die GPUs: one row per die; ASIC quality is calculated separately for each die.",
            "none": "No NVIDIA GPU found.",
            "missing": "n/a: the driver does not report a Speedo for this GPU here; --json shows why."},
-    "es": {"device": "#", "bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Rango del modelo", "quality": "Calidad ASIC",
+    "es": {"device": "#", "bus": "Bus", "gpu": "GPU", "speedo": "Speedo", "range": "Límites driver", "quality": "Calidad ASIC",
            "nvvdd": "IDDQ NVVDD", "msvdd": "IDDQ MSVDD", "ecid": "ECID", "die": "Die", "na": "n/d",
-           "note": "Calidad ASIC: dónde cae el Speedo dentro del rango de su modelo (igual que HWiNFO y mVolt+).\n"
-                   "Compara solo tarjetas del mismo modelo; cada modelo tiene su propio rango.",
+           "note": "Calidad ASIC: Speedo normalizado a los límites del driver; no es percentil ni medida de rendimiento.\n"
+                   "Compara solo el mismo modelo de GPU con las mismas versiones de VBIOS y driver.",
            "override": "* Override de fusible activo: un valor puede diferir del grabado en fábrica.",
            "per_die": "GPUs de dos dies: una fila por die; la calidad ASIC se calcula por separado para cada die.",
            "none": "No se encontró ninguna GPU NVIDIA.",
@@ -101,6 +104,20 @@ class NvApi:
         n = struct.unpack_from("<I", count.data())[0]
         return [C.c_void_p(h) for h in struct.unpack_from(f"<{n}Q", handles.data())]
 
+    def driver_info(self):
+        version, branch = Buffer(4), Buffer(64)
+        status = self.call("GetDriverAndBranchVersion", C.cast(version.raw, C.c_void_p), branch)
+        version_data = version.data()
+        result = {"status": status, "version_number": u32(version_data, 0) if status == 0 else None,
+                  "branch": branch.data().split(b"\0")[0].decode(errors="replace") if status == 0 else None}
+        if sys.platform == "linux":
+            try:
+                with open("/proc/driver/nvidia/version", encoding="ascii") as driver:
+                    result["kernel_module"] = driver.readline().strip()
+            except OSError:
+                pass
+        return result
+
 
 def u32(data, offset):
     return struct.unpack_from("<I", data, offset)[0]
@@ -119,20 +136,39 @@ def ecid_text(q0, q1):
                                      (q1 >> 6) & 63, x, (q1 >> 21) & 0x1FF)
 
 
-def variable_summary(info):
-    """(type, field id, version field id) of every listed VFE variable, for chips this script does not know."""
+def variable_details(info):
+    """Variable indices and fuse identifiers, without interpreting unknown variable layouts."""
     mask = int.from_bytes(info[4:0x24], "little")
-    summary = set()
+    variables = []
     for i in range(255):
         if not mask >> i & 1:
             continue
         e = INFO_BASE + i * INFO_STRIDE
         var_type = u32(info, e)
+        variable = {"var": i, "type": var_type}
         if var_type == 0xE:
-            summary.update((var_type, info[e + 0x114 + die], info[e + 0x116 + die]) for die in range(2))
-        else:
-            summary.add((var_type, info[e + 0x654], info[e + 0x655]))
-    return sorted(summary)
+            variable["field_ids"] = list(info[e + 0x114:e + 0x116])
+            variable["version_field_ids"] = list(info[e + 0x116:e + 0x118])
+            variable["fuse_versions"] = list(info[e + 0x138:e + 0x13A])
+            variable["version_check_done"] = [bool(info[e + 0x144 + die]) for die in range(2)]
+        elif var_type in (7, 0xD):
+            variable["field_ids"] = [info[e + 0x654]]
+            variable["version_field_ids"] = [info[e + 0x655]]
+            variable["fuse_versions"] = [info[e + 0x114]]
+            variable["version_check_done"] = [bool(info[e + 0x138])]
+        if var_type in (7, 0xD, 0xE):
+            v = e + (0x146 if var_type == 0xE else 0x144)
+            variable["version_check"] = {"expected": info[v], "is_mask": bool(info[v + 1]),
+                                         "enabled": bool(info[v + 2]), "ignore": bool(info[v + 3]),
+                                         "use_default_on_failure": bool(info[v + 4])}
+        variables.append(variable)
+    return variables
+
+
+def variable_summary(info):
+    """(type, field id, version field id) tuples for diagnostics on unrecognized chips."""
+    return sorted({(v["type"], field, version) for v in variable_details(info)
+                   for field, version in zip(v.get("field_ids", [0]), v.get("version_field_ids", [0]))})
 
 
 def parse_fuses(info, ctrl, die=None):
@@ -156,6 +192,7 @@ def parse_fuses(info, ctrl, die=None):
             reading = {"var": i, "value": signed_value(info, e + 0x11C + d, e + 0x118 + d),
                        "raw": signed_value(info, e + 0x12C + d, e + 0x128 + d),
                        "valid": bool(info[e + 0x144 + die]), "override": None}
+            fuse_version, version_info = info[e + 0x138 + die], e + 0x146
         else:
             field, version = info[e + 0x654], info[e + 0x655]
             name = (FUSE_D.get((field, version)) if var_type == 0xD
@@ -165,11 +202,18 @@ def parse_fuses(info, ctrl, die=None):
             reading = {"var": i, "value": signed_value(info, e + 0x11C, e + 0x118),
                        "raw": signed_value(info, e + 0x124, e + 0x120),
                        "valid": bool(info[e + 0x138]), "override": bool(info[e + 0x134])}
+            fuse_version, version_info = info[e + 0x114], e + 0x144
+        # A completed check can still use a default value after a version mismatch.
+        if info[version_info + 2]:
+            expected = info[version_info]
+            matches_version = (bool(expected & (1 << fuse_version)) if info[version_info + 1]
+                               else fuse_version == expected)
+            reading["valid"] &= matches_version
         if ctrl is not None:
             c = CTRL_BASE + i * CTRL_STRIDE
             low, high = struct.unpack_from("<ff", ctrl, c + 4)
             if math.isfinite(low) and math.isfinite(high) and low < high and high - low < 1e9:
-                reading["range"] = [round(low, 2), round(high, 2)]
+                reading["range"] = [low, high]  # Preserve the driver's float32 bounds for normalization and JSON.
             reading["override"] = bool(reading["override"] or u32(ctrl, c + 0x2C))
         matches.setdefault(name, []).append(reading)
     fuses = {name: found[0] for name, found in matches.items() if len(found) == 1}
@@ -181,24 +225,35 @@ def parse_fuses(info, ctrl, die=None):
     return fuses
 
 
-def read_gpu(api, handle, device, bus, with_ecid):
+def read_gpu(api, handle, device, bus, with_ecid, diagnostics=False):
     name = Buffer(64)
-    api.call("GetFullName", handle, name)
+    calls = {"GetFullName": api.call("GetFullName", handle, name)}
     gpu = {"device": device, "bus": "%02x" % bus,
            "name": name.data().split(b"\0")[0].decode(errors="replace").removeprefix("NVIDIA ")}
+    if diagnostics:
+        gpu["diagnostics"] = {"calls": calls}
+        vbios = Buffer(64)
+        calls["GetVbiosVersionString"] = api.call("GetVbiosVersionString", handle, vbios)
+        if calls["GetVbiosVersionString"] == 0:
+            gpu["diagnostics"]["vbios_version"] = vbios.data().split(b"\0")[0].decode(errors="replace")
     if with_ecid:
         mfg = Buffer(MFG_SIZE, MFG_VER)
-        if api.call("ManufacturingInfo", handle, mfg) == 0:
+        calls["ManufacturingInfo"] = api.call("ManufacturingInfo", handle, mfg)
+        if calls["ManufacturingInfo"] == 0:
             q0, q1 = struct.unpack_from("<QI", mfg.data(), 8)
             gpu["ecid"] = ecid_text(q0, q1)
     info = Buffer(INFO_SIZE, INFO_VER)
     status = api.call("VfeVarGetInfo", handle, info)
+    calls["VfeVarGetInfo"] = status
     if status != 0:
         gpu["error"] = f"PerfVfeVarGetInfo returned NvAPI status {status} ({NVAPI_STATUS.get(status, 'other')})"
         return gpu
     info_data = info.data()
+    if diagnostics:
+        gpu["diagnostics"].update({"die_count": info_data[0x24], "variables": variable_details(info_data)})
     ctrl = Buffer(CTRL_SIZE, CTRL_VER, seed=bytes(4) + info_data[4:0x24])
-    ctrl_data = ctrl.data() if api.call("VfeVarGetControl", handle, ctrl) == 0 else None
+    calls["VfeVarGetControl"] = api.call("VfeVarGetControl", handle, ctrl)
+    ctrl_data = ctrl.data() if calls["VfeVarGetControl"] == 0 else None
     gpu["fuses"] = parse_fuses(info_data, ctrl_data)
     if info_data[0x24] == 2:  # Only the two-die INFO layout has been decoded.
         dies = [{"die": die, "fuses": parse_fuses(info_data, ctrl_data, die)} for die in range(2)]
@@ -249,6 +304,7 @@ def main():
     parser.add_argument("--bus", type=lambda value: int(value, 16), help="only this PCI bus (hex), e.g. 09")
     parser.add_argument("--ecid", action="store_true", help="also show the chip ECID (wafer, lot, x/y)")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--diagnostics", action="store_true", help="include driver, ABI and call status metadata (implies --json)")
     args = parser.parse_args()
 
     api = NvApi()
@@ -258,9 +314,12 @@ def main():
         if api.call("GetBusId", handle, bus) == 0:
             found.append((u32(bus.data(), 0), handle))
     found.sort(key=lambda item: item[0])  # PCI order, normally the nvidia-smi numbering
-    gpus = [read_gpu(api, handle, device, bus, args.ecid) for device, (bus, handle) in enumerate(found)
+    gpus = [read_gpu(api, handle, device, bus, args.ecid, args.diagnostics) for device, (bus, handle) in enumerate(found)
             if (args.device is None or device == args.device) and (args.bus is None or bus == args.bus)]
-    if args.json:
+    if args.diagnostics:
+        print(json.dumps({"driver": api.driver_info(), "platform": sys.platform, "machine": platform.machine(),
+                          "abi": {"info_version": hex(INFO_VER), "control_version": hex(CTRL_VER)}, "gpus": gpus}, indent=1))
+    elif args.json:
         print(json.dumps(gpus, indent=1))
     elif not gpus:
         print(TEXT[args.lang]["none"])

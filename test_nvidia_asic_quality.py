@@ -30,21 +30,28 @@ def buffers(gpu_index):
 
 
 class CapturedApi:
-    def __init__(self, gpu_index, info=None, control=None):
+    def __init__(self, gpu_index, info=None, control=None, control_status=0, info_status=0):
         self.name = FIXTURE["gpus"][gpu_index]["name"]
         captured_info, captured_control = buffers(gpu_index)
         self.info = captured_info if info is None else info
         self.control = captured_control if control is None else control
+        self.control_status = control_status
+        self.info_status = info_status
 
     def call(self, key, handle, buffer):
+        if key == "VfeVarGetControl" and self.control_status:
+            return self.control_status
+        if key == "VfeVarGetInfo" and self.info_status:
+            return self.info_status
         data = {"GetFullName": self.name.encode() + b"\0",
+                "GetVbiosVersionString": b"test-vbios\0",
                 "VfeVarGetInfo": self.info, "VfeVarGetControl": self.control}[key]
         ctypes.memmove(buffer.raw, bytes(data), len(data))
         return 0
 
 
-def read(gpu_index, **kwargs):
-    return n.read_gpu(CapturedApi(gpu_index, **kwargs), None, gpu_index, gpu_index + 1, False)
+def read(gpu_index, diagnostics=False, **kwargs):
+    return n.read_gpu(CapturedApi(gpu_index, **kwargs), None, gpu_index, gpu_index + 1, False, diagnostics)
 
 
 class FuseTests(unittest.TestCase):
@@ -60,19 +67,19 @@ class FuseTests(unittest.TestCase):
                 self.assertEqual(fuses["speedo"]["value"], speedo)
                 self.assertEqual(fuses["speedo"]["raw"], speedo)
                 self.assertEqual(fuses["speedo"]["quality"], quality)
-                self.assertEqual(fuses["speedo"]["range"], [2071.03, 2270.77])
+                self.assertEqual(fuses["speedo"]["range"], [2071.030029296875, 2270.77001953125])
                 self.assertEqual((fuses["nvvdd"]["value"], fuses["nvvdd"]["raw"]), (nvvdd, nvvdd_raw))
                 self.assertEqual((fuses["msvdd"]["value"], fuses["msvdd"]["raw"]), (msvdd, msvdd_raw))
                 self.assertTrue(all(f["valid"] for f in fuses.values()))
                 self.assertFalse(any(f["override"] for f in fuses.values()))
 
-    def test_rtx_scalar_json_is_preserved(self):
+    def test_rtx_scalar_fields_and_fuse_values_are_preserved(self):
         gpu = read(0)
         self.assertNotIn("dies", gpu)
         self.assertNotIn("error", gpu)
         self.assertEqual(gpu["fuses"]["speedo"], {
             "var": 14, "value": 2181, "raw": 2181, "valid": True, "override": False,
-            "range": [2056.93, 2284.87], "quality": 54.4})
+            "range": [2056.929931640625, 2284.8701171875], "quality": 54.4})
         self.assertEqual(gpu["fuses"]["nvvdd"]["value"], 58650)
         self.assertEqual(gpu["fuses"]["msvdd"]["value"], 18700)
 
@@ -164,6 +171,55 @@ class FuseTests(unittest.TestCase):
                 gpu = read(1, info=info, control=control)
                 self.assertNotIn("dies", gpu)
                 self.assertIn("no Speedo", gpu["error"])
+
+    def test_quality_uses_unrounded_float32_bounds(self):
+        info, control = buffers(1)
+        bounds = (2071.025146484375, 2270.77001953125)
+        struct.pack_into("<ff", control, n.CTRL_BASE + 16 * n.CTRL_STRIDE + 4, *bounds)
+        speedo = n.parse_fuses(info, control, 0)["speedo"]
+        self.assertEqual(speedo["range"], list(bounds))
+        self.assertEqual(speedo["quality"], 49.6)
+        self.assertEqual(round(100 * (2170 - round(bounds[0], 2)) / (round(bounds[1], 2) - round(bounds[0], 2)), 1), 49.5)
+
+    def test_version_mismatch_does_not_turn_a_default_into_quality(self):
+        info, control = buffers(1)
+        e = n.INFO_BASE + 16 * n.INFO_STRIDE
+        info[e + 0x138] = 9  # Outside the expected version mask 0xFF.
+        info[e + 0x149] = 1  # Driver ignores version errors.
+        info[e + 0x14A] = 1  # Driver may substitute the default.
+        speedo = n.parse_fuses(info, control, 0)["speedo"]
+        self.assertFalse(speedo["valid"])
+        self.assertNotIn("quality", speedo)
+        self.assertTrue(n.parse_fuses(info, control, 1)["speedo"]["valid"])
+
+    def test_exact_version_check_is_not_interpreted_as_a_mask(self):
+        info, control = buffers(1)
+        e = n.INFO_BASE + 16 * n.INFO_STRIDE
+        info[e + 0x146:e + 0x148] = b"\x03\x00"
+        info[e + 0x138] = 3
+        self.assertTrue(n.parse_fuses(info, control, 0)["speedo"]["valid"])
+        self.assertFalse(n.parse_fuses(info, control, 1)["speedo"]["valid"])
+
+    def test_diagnostics_preserve_failed_control_status_and_identifiers(self):
+        gpu = read(1, diagnostics=True, control_status=-104)
+        diagnostics = gpu["diagnostics"]
+        self.assertEqual(diagnostics["calls"]["VfeVarGetControl"], -104)
+        self.assertEqual(diagnostics["vbios_version"], "test-vbios")
+        speedo_info = next(v for v in diagnostics["variables"] if v["var"] == 16)
+        self.assertEqual(speedo_info["field_ids"], [0x3A, 0x6C])
+        self.assertEqual(speedo_info["fuse_versions"], [1, 1])
+        self.assertEqual(speedo_info["version_check_done"], [True, True])
+        self.assertEqual(speedo_info["version_check"]["expected"], 255)
+        for die in gpu["dies"]:
+            self.assertNotIn("quality", die["fuses"]["speedo"])
+            self.assertIsNone(die["fuses"]["speedo"]["override"])
+
+    def test_diagnostics_preserve_info_abi_error(self):
+        gpu = read(1, diagnostics=True, info_status=-9)
+        self.assertIn("incompatible struct version", gpu["error"])
+        self.assertEqual(gpu["diagnostics"]["calls"]["VfeVarGetInfo"], -9)
+        self.assertNotIn("VfeVarGetControl", gpu["diagnostics"]["calls"])
+        self.assertNotIn("fuses", gpu)
 
     def test_duplicate_matches_are_rejected_per_die(self):
         info, control = buffers(1)
