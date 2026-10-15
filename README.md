@@ -162,17 +162,33 @@ Compartidos por usuarios; sin ECID. La calidad ASIC solo compara tarjetas del mi
 
 | User | GPU | Speedo | ASIC quality | IDDQ NVVDD | IDDQ MSVDD |
 |---|---|---:|---:|---:|---:|
+| Shieldstar | Max-Q Workstation Edition | 2213 | 68.5 % | 64350 | 20750 |
 | Panchovix | Max-Q Workstation Edition | 2197 | 61.5 % | 56450 | 18550 |
 | Panchovix | Max-Q Workstation Edition | 2197 | 61.5 % | 60800 | 20000 |
 | aimark42 | Workstation Edition | 2195 | 60.6 % | 67900 | 22650 |
 | aimark42 | Max-Q Workstation Edition | 2191 | 58.8 % | 55800 | 18500 |
+| Shieldstar | Workstation Edition | 2190 | 58.4 % | 59200 | 19150 |
 | el8 | Max-Q Workstation Edition | 2181 | 54.4 % | 58650 | 18700 |
+| Shieldstar | Workstation Edition | 2179 | 53.6 % | 53900 | 17600 |
+| Shieldstar | Max-Q Workstation Edition | 2176 | 52.2 % | 49500 | 16750 |
+| Shieldstar | Max-Q Workstation Edition | 2172 | 50.5 % | 58200 | 19000 |
 | crowbill | Workstation Edition | 2171 | 50.0 % | 56100 | 17250 |
 | Panchovix | Max-Q Workstation Edition | 2169 | 49.2 % | 61800 | 20400 |
 | crowbill | Workstation Edition | 2159 | 44.8 % | 58250 | 19350 |
+| Shieldstar | Workstation Edition | 2156 | 43.5 % | 53200 | 16800 |
+| Shieldstar | Max-Q Workstation Edition | 2153 | 42.1 % | 49900 | 16400 |
 | crowbill | Workstation Edition | 2151 | 41.3 % | 50150 | 16150 |
+| Shieldstar | Workstation Edition | 2149 | 40.4 % | 51050 | 16450 |
+| Shieldstar | Workstation Edition | 2145 | 38.6 % | 46350 | 15450 |
+| Shieldstar | Max-Q Workstation Edition | 2144 | 38.2 % | 51750 | 16550 |
+| Shieldstar | Max-Q Workstation Edition | 2143 | 37.8 % | 49450 | 16450 |
+| Shieldstar | Workstation Edition | 2142 | 37.3 % | 45850 | 14850 |
 | aimark42 | Max-Q Workstation Edition | 2138 | 35.6 % | 52000 | 17050 |
 | crowbill | Workstation Edition | 2135 | 34.3 % | 45150 | 14300 |
+| Shieldstar | Workstation Edition | 2120 | 27.7 % | 53750 | 17350 |
+| Shieldstar | Max-Q Workstation Edition | 2117 | 26.4 % | 44450 | 14600 |
+| Shieldstar | Max-Q Workstation Edition | 2116 | 25.9 % | 52300 | 17050 |
+| Shieldstar | Workstation Edition | 2109 | 22.8 % | 58450 | 18900 |
 
 Jack Zampolin, two machines with four GPUs each (ASIC quality only, model not stated):
 workstation-1 41.3 %, 27.7 %, 47.4 %, 43.5 %; workstation-2 53.6 %, 46.1 %, 31.6 %, 66.7 %.
